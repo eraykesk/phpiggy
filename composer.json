@@ -2,7 +2,9 @@
     "name": "90543/phpiggy",
     "description": "A php application for tracking expenses.",
     "type": "project",
-    "require": {},
+    "require": {
+        "vlucas/phpdotenv": "^5.5"
+    },
     "autoload": {
         "psr-4": {
             "Framework\\": "src/Framework",
