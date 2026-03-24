@@ -21,7 +21,7 @@ class ReceiptController
 
     public function uploadView(array $params)
     {
-        $transaction = $this->transactionService->getUserTransaction($params['transaction']);
+        $transaction = $this->transactionService->getUserTransaction($params['transaction'], (int) $_SESSION['user']);
 
         if (!$transaction) {
             redirectTo("/");
@@ -32,7 +32,7 @@ class ReceiptController
 
     public function upload(array $params)
     {
-        $transaction = $this->transactionService->getUserTransaction($params['transaction']);
+        $transaction = $this->transactionService->getUserTransaction($params['transaction'], (int) $_SESSION['user']);
 
         if (!$transaction) {
             redirectTo("/");
@@ -48,7 +48,7 @@ class ReceiptController
     }
     public function download(array $params)
     {
-        $transaction = $this->transactionService->getUserTransaction($params['transaction']);
+        $transaction = $this->transactionService->getUserTransaction($params['transaction'], (int) $_SESSION['user']);
 
         if (empty($transaction)) {
             redirectTo('/');
@@ -68,7 +68,7 @@ class ReceiptController
     }
     public function delete(array $params)
     {
-        $transaction = $this->transactionService->getUserTransaction($params['transaction']);
+        $transaction = $this->transactionService->getUserTransaction($params['transaction'], (int) $_SESSION['user']);
 
         if (empty($transaction)) {
             redirectTo('/');

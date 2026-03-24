@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Framework;
 
-use PDO, PDOException, PDOStatement;
+use PDO, PDOException;
 
 class Database
 {
     private PDO $connection;
-    private PDOStatement $stmt;
+
     public function __construct(
         string $driver,
         array $config,
@@ -29,30 +29,17 @@ class Database
         }
     }
 
-    public function query(string $query, array $params = []): Database
+    public function query(string $query, array $params = []): Statement
     {
-        $this->stmt = $this->connection->prepare($query);
+        $stmt = $this->connection->prepare($query);
 
-        $this->stmt->execute($params);
+        $stmt->execute($params);
 
-        return $this;
+        return new Statement($stmt);
     }
 
-    public function count()
-    {
-        return $this->stmt->fetchColumn();
-    }
-    public function find()
-    {
-        return $this->stmt->fetch();
-    }
-    public function id()
+    public function id(): string|false
     {
         return $this->connection->lastInsertId();
-    }
-
-    public function findAll()
-    {
-        return $this->stmt->fetchAll();
     }
 }

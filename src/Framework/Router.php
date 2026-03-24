@@ -35,7 +35,8 @@ class Router
     public function dispatch(string $path, string $method, Container $container = null)
     {
         $path = $this->normalizePath($path);
-        $method = strtoupper($_POST['_METHOD'] ?? $method);
+        $override = strtoupper($_POST['_METHOD'] ?? '');
+        $method = in_array($override, ['PUT', 'PATCH', 'DELETE']) ? $override : strtoupper($method);
 
         foreach ($this->routes as $route) {
             if (!preg_match("#^{$route['regexPath']}$#", $path, $paramValues) || $route['method'] !== $method) {
