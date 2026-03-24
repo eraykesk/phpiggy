@@ -1,0 +1,46 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8080:80"
+    volumes:
+      # Mount source for live editing — changes reflect immediately
+      - .:/var/www/html
+      # Prevent the bind mount from wiping vendor/ — keeps the image's composer install
+      - vendor_data:/var/www/html/vendor
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: rootsecret
+      MYSQL_DATABASE: phpiggy
+      MYSQL_USER: phpiggy
+      MYSQL_PASSWORD: secret
+    ports:
+      - "3306:3306"
+    volumes:
+      # Persist database data across container restarts
+      - db_data:/var/lib/mysql
+      # Auto-run schema on first startup
+      - ./database.sql:/docker-entrypoint-initdb.d/database.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "phpiggy", "-psecret"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  adminer:
+    image: adminer:latest
+    ports:
+      - "8081:8080"
+    depends_on:
+      - db
+
+volumes:
+  db_data:
+  vendor_data:
